@@ -2,26 +2,28 @@ import fastifyCookie from "@fastify/cookie";
 import fastify from "fastify";
 import { ZodError } from "zod";
 import { env } from "@/env";
-import { usersRoutes } from "@/http/routes/users-routes";
-import { chatsRoutes } from "@/http/routes/chats-routes";
 import { Server } from "socket.io";
-import { socketServer } from "./socket/socket-server";
+import fastifyRedis from "@fastify/redis";
+import { Message } from "@prisma/client";
+
+export type SocketProps = {
+  "new-message": (message: Message) => void;
+};
+
+export type ServerIO = Server<SocketProps>;
 
 declare module "fastify" {
   interface FastifyInstance {
-    io: Server<{
-      "new-message": () => void;
-    }>;
+    io: ServerIO;
   }
 }
 
 export const app = fastify();
 
-app.register(socketServer);
+app.register(fastifyRedis, {
+  url: env.REDIS_URL,
+});
 app.register(fastifyCookie);
-
-app.register(usersRoutes);
-app.register(chatsRoutes);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

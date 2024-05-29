@@ -1,8 +1,9 @@
-// import "dotenv/config";
+import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["dev", "test", "production"]).default("dev"),
+  REDIS_URL: z.string().url(),
   PORT: z.coerce.number().default(3333),
 });
 

@@ -30,7 +30,11 @@ export const prismaChatsRepository = {
         },
       },
       include: {
-        users: true,
+        users: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

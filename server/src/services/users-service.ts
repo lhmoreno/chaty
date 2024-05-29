@@ -8,6 +8,12 @@ export const usersService = {
     return user;
   },
 
+  async update(id: string, data: Prisma.UserUpdateInput) {
+    const user = await prismaUsersRepository.update(id, data);
+
+    return user;
+  },
+
   async findAllWithoutRequester(userId: string) {
     const users = await prismaUsersRepository.findAll();
 

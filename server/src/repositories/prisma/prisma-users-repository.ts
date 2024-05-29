@@ -10,6 +10,17 @@ export const prismaUsersRepository = {
     return user;
   },
 
+  async update(id: string, data: Prisma.UserUpdateInput) {
+    const user = await prisma.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+
+    return user;
+  },
+
   async findAll() {
     const users = await prisma.user.findMany();
 

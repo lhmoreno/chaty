@@ -1,20 +1,22 @@
 import { FastifyInstance } from "fastify";
-import fastifyIO from "fastify-socket.io";
+import { auth } from "./middlewares/auth";
+import { redisUsersRepository } from "@/repositories/redis/redis-users-repository";
 
 export async function socketServer(app: FastifyInstance) {
-  await app.register(fastifyIO, {
-    cors: {
-      origin: "*",
-    },
-  });
+  app.io.use(auth);
 
-  app.io.on("connection", (socket) => {
+  app.io.on("connection", async (socket) => {
+    const userId = socket.handshake.auth.userId as string;
     const id = String(socket.id);
 
-    console.log("✅ User connect: ID -", id);
+    await redisUsersRepository(app.redis).setWithOnline(userId, id);
 
-    socket.on("disconnect", () => {
-      console.log("🛑 User disconnct: ID -", id);
+    console.log(`✅ User ${userId} connected`);
+
+    socket.on("disconnect", async () => {
+      await redisUsersRepository(app.redis).setWithNotOnline(userId);
+
+      console.log(`🛑 User ${userId} disconnected`);
     });
   });
 }

@@ -10,3 +10,9 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: chaty
+
+  redis:
+    container_name: chaty_cache
+    image: redis:7.2.4-alpine
+    ports:
+      - 6379:6379

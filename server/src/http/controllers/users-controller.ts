@@ -36,4 +36,22 @@ export const usersController = {
 
     return { users };
   },
+
+  async update(request: FastifyRequest, reply: FastifyReply) {
+    const userId = request.cookies["@chaty:userId"];
+
+    const createUserInBodySchema = z.object({
+      name: z.string(),
+    });
+
+    const { name } = createUserInBodySchema.parse(request.body);
+
+    if (!userId) {
+      return { message: "Unthorized!" };
+    }
+
+    const user = await usersService.update(userId, { name });
+
+    return { user };
+  },
 };

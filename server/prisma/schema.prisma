@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum MessageStatus {
+  SENT
+  RECEIVE
+  READ
+}
+
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -25,9 +31,10 @@ model Chat {
 }
 
 model Message {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
+  id        String        @id @default(uuid())
+  createdAt DateTime      @default(now())
   text      String
+  status    MessageStatus @default(SENT)
 
   sender   User   @relation(fields: [senderId], references: [id])
   senderId String
@@ -36,10 +43,11 @@ model Message {
 }
 
 model UsersOnChat {
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  chat   Chat   @relation(fields: [chatId], references: [id])
-  chatId String
+  user                User   @relation(fields: [userId], references: [id])
+  userId              String
+  chat                Chat   @relation(fields: [chatId], references: [id])
+  chatId              String
+  unreadMessagesCount Int    @default(0)
 
   @@id([userId, chatId])
 }
