@@ -38,11 +38,8 @@ export default function Chat() {
 
     if (!nickname) return router.push("/");
 
-    const mySocket = io("http://localhost:3333", {
-      query: {
-        nickname,
-      },
-    });
+    const mySocket = io("http://localhost:3333");
+    console.log(mySocket.connected);
 
     socket.current = mySocket;
 

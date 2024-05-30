@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { env } from "@/env";
 import { Server } from "socket.io";
 import fastifyRedis from "@fastify/redis";
+import cors from "@fastify/cors";
 import { Message } from "@prisma/client";
 
 export type SocketProps = {
@@ -24,6 +25,10 @@ app.register(fastifyRedis, {
   url: env.REDIS_URL,
 });
 app.register(fastifyCookie);
+app.register(cors, {
+  origin: "http://localhost:3000",
+  credentials: true,
+});
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

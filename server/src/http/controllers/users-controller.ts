@@ -16,7 +16,6 @@ export const usersController = {
 
     return reply
       .setCookie("@chaty:userId", user.id, {
-        path: "/",
         secure: true,
         sameSite: true,
         httpOnly: true,
